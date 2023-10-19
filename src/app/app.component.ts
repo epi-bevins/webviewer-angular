@@ -1,58 +1,41 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import WebViewer, {WebViewerInstance} from "@pdftron/webviewer";
-import {Subject} from "rxjs";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+} from "@angular/core";
+import WebViewer from "@pdftron/webviewer";
 
 @Component({
-  selector: 'app-root',
-  styleUrls: ['app.component.css'],
-  templateUrl: 'app.component.html'
+  selector: "app-root",
+  styleUrls: ["app.component.css"],
+  templateUrl: "app.component.html",
 })
 export class AppComponent implements AfterViewInit {
-  wvInstance?: WebViewerInstance;
-  
-  @ViewChild('viewer') viewer!: ElementRef;
-  
-  @Output() coreControlsEvent:EventEmitter<string> = new EventEmitter();
+  @ViewChild("viewer") viewer!: ElementRef;
+  fileName: string = '';
 
-  private documentLoaded$: Subject<void>;
-
-  constructor() {
-    this.documentLoaded$ = new Subject<void>();
+  async ngOnInit() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.fileName = urlParams.get('file') || '';
   }
 
   ngAfterViewInit(): void {
+    this.loadDocument();
+  }
 
-    WebViewer({
-      path: '../lib',
-      initialDoc: '../files/webviewer-demo-annotated.pdf',
-      licenseKey: 'your_license_key'  // sign up to get a free trial key at https://dev.apryse.com
-    }, this.viewer.nativeElement).then(instance => {
-      this.wvInstance = instance;
-
-      this.coreControlsEvent.emit(instance.UI.LayoutMode.Single);
-
-      const { documentViewer, Annotations, annotationManager } = instance.Core;
-
-      instance.UI.openElements(['notesPanel']);
-
-      documentViewer.addEventListener('annotationsLoaded', () => {
-        console.log('annotations loaded');
-      });
-
-      documentViewer.addEventListener('documentLoaded', () => {
-        this.documentLoaded$.next();
-        const rectangleAnnot = new Annotations.RectangleAnnotation({
-          PageNumber: 1,
-          // values are in page coordinates with (0, 0) in the top left
-          X: 100,
-          Y: 150,
-          Width: 200,
-          Height: 50,
-          Author: annotationManager.getCurrentUser()
-        });
-        annotationManager.addAnnotation(rectangleAnnot);
-        annotationManager.redrawAnnotation(rectangleAnnot);
-      });
-    })
+  async loadDocument() {
+    WebViewer(
+      {
+        path: "../lib",
+        initialDoc: "http://localhost:3000/file/" + this.fileName,
+        fullAPI: true,
+        licenseKey: "demo:1697228693784:7ce6fb280300000000955144a7ddff50897c58ac2e3362bb24286f406d", // sign up to get a free trial key at https://dev.apryse.com
+      },
+      this.viewer.nativeElement
+    ).then((instance) => {
+      instance.UI.setTheme('dark');
+      instance.UI.disableElements(['header']);
+    });
   }
 }

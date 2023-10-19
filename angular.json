@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pdftron-angular-sample": {
+    "doclink-angular-pdfviewer": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -40,7 +40,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/pdftron-angular-sample",
+            "outputPath": "dist/doclink-angular-pdfviewer",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -88,10 +88,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "pdftron-angular-sample:build:production"
+              "browserTarget": "doclink-angular-pdfviewer:build:production"
             },
             "development": {
-              "browserTarget": "pdftron-angular-sample:build:development"
+              "browserTarget": "doclink-angular-pdfviewer:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -99,7 +99,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pdftron-angular-sample:build"
+            "browserTarget": "doclink-angular-pdfviewer:build"
           }
         }
       }
